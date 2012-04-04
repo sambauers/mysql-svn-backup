@@ -19,4 +19,12 @@ Dependencies:
 
 Configuration:
 
-Read the comments in all the conf.* files. Check the output in the log file for details of fatal errors.
+Copy all the conf.*.example files to conf.*
+
+You should end up with:
+
+* conf.local
+* conf.databases
+* conf.skiptables
+
+Read the comments in all the config files for configuration hints. Check the output in the log file (mysql-svn.log) for details of fatal errors.
