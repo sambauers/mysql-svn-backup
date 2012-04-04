@@ -1,0 +1,20 @@
+# MySQL Host and authentication
+MYSQLHOST='localhost';
+MYSQLUSER='backups';
+MYSQLPASS='goodpassword';
+
+# SVN Host and Authentication
+SVNUSER='backups';
+SVNPASS='foobar';
+SVNURI='https://svn.example.org/backups/';
+
+# Storage (can be relative or absolute path)
+#LOGFILE='mysql-svn.log';
+#DUMPDIR='dump/';
+
+# MySQL Executables
+#MYSQL='/usr/bin/mysql';
+#MYSQLDUMP='/usr/bin/mysqldump';
+
+# SVN Executable
+#SVN='/usr/bin/svn';

@@ -1,0 +1,5 @@
+# Place table names here that you want to skip backup for one per line, remove this notice plus any additional whitespace before or after the list. Syntax to use is <database_name>/<table_name>
+
+Database_One/Table_Six
+Database_One/Table_Twenty
+Database_Three/Table_Gamma

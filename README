@@ -1,0 +1,22 @@
+MySQL SVN Backup provides an easy way to backup your MySQL database to an SVN repository.
+
+When run locally on a MySQL platform it makes local dumps of databases table-by-table to files. These files are then automatically checked into a preconfigured Subversion repository.
+
+The primary advantage is in having complete incremental historical snapshots of your database(s) available for potentially a longer time than standard monolithic database dumps.
+
+If you find you need to transpose databases to other locations a lot, then storing your backups in Subversion can help to speed things up. Instead of waiting for an entire dump to be transferred, you can just keep a local working copy of the backup and update the incremental changes using Subversion before importing the data into MySQL.
+
+This method and tool is not recommended for huge databases (or at least it hasn't been tested). It is probably also not much good for databases that store a lot of frequently changing binary data.
+
+You can automate the backup process by setting up a cron job on your server.
+
+Dependencies:
+
+* Bash Shell
+* MySQL command line client and MySQLDump
+* Subversion
+* A remote Subversion repository
+
+Configuration:
+
+Read the comments in all the conf.* files. Check the output in the log file for details of fatal errors.

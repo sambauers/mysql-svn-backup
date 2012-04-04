@@ -1,0 +1,5 @@
+# Place database names here that you want to backup, one per line, remove this notice plus any additional whitespace before or after the list.
+
+Database_One
+Database_Two
+Database_Three
