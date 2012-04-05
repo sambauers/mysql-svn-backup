@@ -22,10 +22,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# Find the base directory (resolving symbolic links)
+BASE=`readlink -f $0`;
+BASE=$( dirname $BASE );
+
 # Include externally set variables
-if [ -f conf.local ];
+if [ -f $BASE/conf.local ];
 then
-	. conf.local
+	. $BASE/conf.local
 fi
 
 # Check for existence of critical SVN variables
@@ -46,14 +50,14 @@ then
 fi
 
 # Array of databases to backup
-DATABASES=`cat conf.databases`;
+DATABASES=`cat $BASE/conf.databases`;
 
 # Array of tables to skip, leave blank to backup all
-SKIPTABLES=`cat conf.skiptables`;
+SKIPTABLES=`cat $BASE/conf.skiptables`;
 
 # Defaults - Storage
-if [ -z $LOGFILE ]; then LOGFILE='mysql-svn.log'; fi
-if [ -z $DUMPDIR ]; then DUMPDIR='dump/'; fi
+if [ -z $LOGFILE ]; then LOGFILE=$BASE'/mysql-svn.log'; fi
+if [ -z $DUMPDIR ]; then DUMPDIR=$BASE'/dump/'; fi
 
 # Defaults - MySQL Executables
 if [ -z $MYSQL ]; then MYSQL='/usr/bin/mysql'; fi
@@ -77,9 +81,10 @@ function in_array() {
 }
 
 # Start output
-echo ">>> ===============" >>$LOGFILE 2>&1;
-echo ">>> Commence Backup" >>$LOGFILE 2>&1;
-echo ">>> ===============" >>$LOGFILE 2>&1;
+DATESTART=`date`;
+echo ">>> ===============================================" >>$LOGFILE 2>&1;
+echo ">>> Commence Backup at $DATESTART" >>$LOGFILE 2>&1;
+echo ">>> ===============================================" >>$LOGFILE 2>&1;
 echo ">>>" >>$LOGFILE 2>&1;
 echo ">>> 1. Normalise storage" >>$LOGFILE 2>&1;
 echo ">>>" >>$LOGFILE 2>&1;
@@ -205,13 +210,13 @@ $SVN add -q $DUMPDIR* >>$LOGFILE 2>&1;
 echo ">>>" >>$LOGFILE 2>&1;
 echo ">>> 6. Commit files to working copy" >>$LOGFILE 2>&1;
 echo ">>>" >>$LOGFILE 2>&1;
-DATE=`date`;
-$SVN commit --username $SVNUSER --password $SVNPASS -m "MySQL-SVN Backup $DATE" $DUMPDIR >>$LOGFILE 2>&1;
+DATEEND=`date`;
+$SVN commit --username $SVNUSER --password $SVNPASS -m "MySQL-SVN Backup $DATEEND" $DUMPDIR >>$LOGFILE 2>&1;
 echo ">>>" >>$LOGFILE 2>&1;
 
 # End output
-echo ">>> ===============" >>$LOGFILE 2>&1;
-echo ">>> Backup Complete" >>$LOGFILE 2>&1;
-echo ">>> ===============" >>$LOGFILE 2>&1;
+echo ">>> ===============================================" >>$LOGFILE 2>&1;
+echo ">>> Backup Complete at $DATEEND" >>$LOGFILE 2>&1;
+echo ">>> ===============================================" >>$LOGFILE 2>&1;
 echo "" >>$LOGFILE 2>&1;
 exit 0;
