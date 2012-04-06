@@ -117,19 +117,21 @@ echo ">>>" >>$LOGFILE 2>&1;
 
 # Check that there is a working copy
 $SVN info $DUMPDIR >>$LOGFILE 2>&1;
+LASTRESULT=$?;
 echo ">>>" >>$LOGFILE 2>&1;
 
 # Initialise working copy if not present
-if [[ $? != 0 ]];
+if [[ $LASTRESULT != 0 ]];
 then
 	echo "!!! WARNING: No working copy found in $DUMPDIR." >>$LOGFILE 2>&1;
 	echo "!!! WARNING: Attempting to initialise working copy." >>$LOGFILE 2>&1;
 	echo "!!!" >>$LOGFILE 2>&1;
 	$SVN checkout --username $SVNUSER --password $SVNPASS $SVNURI $DUMPDIR >>$LOGFILE 2>&1;
+	LASTRESULT=$?;
 	echo "!!!" >>$LOGFILE 2>&1;
 
 	# Fatal error if can't initialise
-	if [[ $? != 0 ]];
+	if [[ $LASTRESULT != 0 ]];
 	then
 		echo "!!! FATAL ERROR: The working copy could not be initialised." >>$LOGFILE 2>&1;
 		echo "!!!              Run the following command to determine the error." >>$LOGFILE 2>&1;
@@ -151,9 +153,10 @@ echo ">>>" >>$LOGFILE 2>&1;
 
 # Get all databases
 ALLDATABASES=`$MYSQL $MYSQLHOST $MYSQLUSER $MYSQLPASS -B -N -e "SHOW DATABASES;"`;
+LASTRESULT = $?;
 
 # Fatal error if can't connect
-if [[ $? != 0 ]];
+if [[ $LASTRESULT != 0 ]];
 then
 	echo "!!! FATAL ERROR: Could not collect all database names." >>$LOGFILE 2>&1;
 	echo "!!!              Run the following command to determine the error." >>$LOGFILE 2>&1;
