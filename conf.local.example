@@ -8,13 +8,13 @@ SVNUSER='backups';
 SVNPASS='foobar';
 SVNURI='https://svn.example.org/backups/';
 
-# Storage (can be relative or absolute path)
+# Storage (can be relative or absolute path) - defaults are shown
 #LOGFILE='mysql-svn.log';
 #DUMPDIR='dump/';
 
-# MySQL Executables
+# MySQL Executables - defaults are shown
 #MYSQL='/usr/bin/mysql';
 #MYSQLDUMP='/usr/bin/mysqldump';
 
-# SVN Executable
+# SVN Executable - default is shown
 #SVN='/usr/bin/svn';
