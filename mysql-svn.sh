@@ -153,7 +153,7 @@ echo ">>>" >>$LOGFILE 2>&1;
 
 # Get all databases
 ALLDATABASES=`$MYSQL $MYSQLHOST $MYSQLUSER $MYSQLPASS -B -N -e "SHOW DATABASES;"`;
-LASTRESULT = $?;
+LASTRESULT=$?;
 
 # Fatal error if can't connect
 if [[ $LASTRESULT != 0 ]];
