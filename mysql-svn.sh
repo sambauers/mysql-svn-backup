@@ -126,7 +126,7 @@ then
 	echo "!!! WARNING: No working copy found in $DUMPDIR." >>$LOGFILE 2>&1;
 	echo "!!! WARNING: Attempting to initialise working copy." >>$LOGFILE 2>&1;
 	echo "!!!" >>$LOGFILE 2>&1;
-	$SVN checkout --username $SVNUSER --password $SVNPASS $SVNURI $DUMPDIR >>$LOGFILE 2>&1;
+	$SVN checkout --username $SVNUSER --password $SVNPASS --no-auth-cache --non-interactive $SVNURI $DUMPDIR >>$LOGFILE 2>&1;
 	LASTRESULT=$?;
 	echo "!!!" >>$LOGFILE 2>&1;
 
@@ -136,7 +136,7 @@ then
 		echo "!!! FATAL ERROR: The working copy could not be initialised." >>$LOGFILE 2>&1;
 		echo "!!!              Run the following command to determine the error." >>$LOGFILE 2>&1;
 		echo "!!!" >>$LOGFILE 2>&1;
-		echo "!!!              $SVN checkout --username $SVNUSER --password ********** $SVNURI $DUMPDIR" >>$LOGFILE 2>&1;
+		echo "!!!              $SVN checkout --username $SVNUSER --password ********** --no-auth-cache --non-interactive $SVNURI $DUMPDIR" >>$LOGFILE 2>&1;
 		echo "!!!" >>$LOGFILE 2>&1;
 		exit 2;
 	fi
@@ -214,7 +214,7 @@ echo ">>>" >>$LOGFILE 2>&1;
 echo ">>> 6. Commit files to working copy" >>$LOGFILE 2>&1;
 echo ">>>" >>$LOGFILE 2>&1;
 DATEEND=`date`;
-$SVN commit --username $SVNUSER --password $SVNPASS -m "MySQL-SVN Backup $DATEEND" $DUMPDIR >>$LOGFILE 2>&1;
+$SVN commit --username $SVNUSER --password $SVNPASS --no-auth-cache --non-interactive -m "MySQL-SVN Backup $DATEEND" $DUMPDIR >>$LOGFILE 2>&1;
 echo ">>>" >>$LOGFILE 2>&1;
 
 # End output
