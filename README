@@ -35,3 +35,5 @@ $ mysql -u root -p -e "CREATE DATABASE \`my_database\`;"
 $ cat my_database/*.sql | mysql -u root -p my_database
 
 This will create the database and then concatenate the sql files and pass them through the mysql client to be executed.
+
+MySQL SVN Backup is distributed under the MIT license.
