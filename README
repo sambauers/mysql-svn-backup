@@ -28,3 +28,10 @@ You should end up with:
 * conf.skiptables
 
 Read the comments in all the config files for configuration hints. Check the output in the log file (mysql-svn.log) for details of fatal errors.
+
+To restore from the file-per-table files, you can do the following from the designated dump directory:
+
+$ mysql -u root -p -e "CREATE DATABASE \`my_database\`;"
+$ cat my_database/*.sql | mysql -u root -p my_database
+
+This will create the database and then concatenate the sql files and pass them through the mysql client to be executed.
