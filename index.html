@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>MySQL SVN Backup by red-ant</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>MySQL SVN Backup</h1>
+        <p>MySQL SVN Backup provides an easy way to backup your MySQL database to an SVN repository.</p>
+        <p class="view"><a href="https://github.com/red-ant/mysql-svn-backup">View the Project on GitHub <small>red-ant/mysql-svn-backup</small></a></p>
+        <ul>
+          <li><a href="https://github.com/red-ant/mysql-svn-backup/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/red-ant/mysql-svn-backup/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/red-ant/mysql-svn-backup">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h2>About MySQL SVN Backup</h2>
+
+<p>When run locally on a MySQL platform it makes local dumps of databases table-by-table to files. These files are then automatically checked into a preconfigured Subversion repository.</p>
+
+<p>The primary advantage is in having complete incremental historical snapshots of your database(s) available for potentially a longer time than standard monolithic database dumps.</p>
+
+<p>If you find you need to transpose databases to other locations a lot, then storing your backups in Subversion can help to speed things up. Instead of waiting for an entire dump to be transferred, you can just keep a local working copy of the backup and update the incremental changes using Subversion before importing the data into MySQL.</p>
+
+<p>This method and tool is not recommended for huge databases (or at least it hasn't been tested). It is probably also not much good for databases that store a lot of frequently changing binary data.</p>
+
+<p>You can automate the backup process by setting up a cron job on your server.</p>
+
+<h2>Dependencies</h2>
+
+<ul>
+<li>Bash Shell</li>
+<li>MySQL command line client and MySQLDump</li>
+<li>Subversion</li>
+<li>A remote Subversion repository</li>
+</ul><h2>Configuration</h2>
+
+<p>Copy all the conf.*.example files to conf.*</p>
+
+<p>You should end up with:</p>
+
+<ul>
+<li>conf.local</li>
+<li>conf.databases</li>
+<li>conf.skiptables</li>
+</ul><p>Read the comments in all the config files for configuration hints. Check the output in the log file (mysql-svn.log) for details of fatal errors.</p>
+
+<h2>Restoring from your backups</h2>
+
+<p>To restore from the file-per-table files, you can do the following from the designated dump directory:</p>
+
+<div class="highlight">
+<pre><span class="nv">$ </span>mysql -u root -p -e <span class="s2">"CREATE DATABASE \`my_database\`;"</span>
+<span class="nv">$ </span>cat my_database/*.sql | mysql -u root -p my_database
+</pre>
+</div>
+
+
+<p>This will create the database and then concatenate the sql files and pass them through the mysql client to be executed.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/red-ant">red-ant</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
