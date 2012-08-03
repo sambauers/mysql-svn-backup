@@ -21,13 +21,13 @@ Dependencies:
 
 Configuration:
 
-Copy all the conf.*.example files to conf.*
+Copy all the conf/*.conf.example files to conf/*.conf
 
 You should end up with:
 
-* conf.local
-* conf.databases
-* conf.skiptables
+* conf/local.conf
+* conf/databases.conf
+* conf/skiptables.conf
 
 Read the comments in all the config files for configuration hints. Check the output in the log file (mysql-svn.log) for details of fatal errors.
 
