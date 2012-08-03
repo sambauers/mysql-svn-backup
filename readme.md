@@ -1,4 +1,10 @@
-http://red-ant.github.com/mysql-svn-backup/
+MySQL SVN Backup
+================
+
+The pretty version of this information is [over here](http://red-ant.github.com/mysql-svn-backup/ "MySQL SVN Backup on GitHub Pages")
+
+About MySQL SVN Backup
+----------------------
 
 MySQL SVN Backup provides an easy way to backup your MySQL database to an SVN repository.
 
@@ -12,14 +18,16 @@ This method and tool is not recommended for huge databases (or at least it hasn'
 
 You can automate the backup process by setting up a cron job on your server.
 
-Dependencies:
+Dependencies
+------------
 
 * Bash Shell
 * MySQL command line client and MySQLDump
 * Subversion
 * A remote Subversion repository
 
-Configuration:
+Configuration
+-------------
 
 Copy all the conf/*.conf.example files to conf/*.conf
 
@@ -31,11 +39,17 @@ You should end up with:
 
 Read the comments in all the config files for configuration hints. Check the output in the log file (mysql-svn.log) for details of fatal errors.
 
+Restoring from your backups
+---------------------------
+
 To restore from the file-per-table files, you can do the following from the designated dump directory:
 
-$ mysql -u root -p -e "CREATE DATABASE \`my_database\`;"
-$ cat my_database/*.sql | mysql -u root -p my_database
+	$ mysql -u root -p -e "CREATE DATABASE \`my_database\`;"
+	$ cat my_database/*.sql | mysql -u root -p my_database
 
 This will create the database and then concatenate the sql files and pass them through the mysql client to be executed.
+
+License
+-------
 
 MySQL SVN Backup is distributed under the MIT license.
