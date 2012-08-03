@@ -44,17 +44,35 @@
 <li>MySQL command line client and MySQLDump</li>
 <li>Subversion</li>
 <li>A remote Subversion repository</li>
-</ul><h2>Configuration</h2>
+</ul>
 
-<p>Copy all the conf/*.conf.example files to conf/*.conf</p>
+<h2>Configuration</h2>
+
+<p>Move all the <code>conf/*.conf.example</code> files to <code>conf/*.conf</code>, here's a one-liner for that:</p>
+
+<div class="highlight">
+<pre><span class="nv">$ </span>for FILE in test/*.example; do mv $FILE ${FILE%.example}; done</pre>
+</div>
 
 <p>You should end up with:</p>
 
 <ul>
-<li>conf/local.conf</li>
-<li>conf/databases.conf</li>
-<li>conf/skiptables.conf</li>
-</ul><p>Read the comments in all the config files for configuration hints. Check the output in the log file (mysql-svn.log) for details of fatal errors.</p>
+<li><code>conf/local.conf</code></li>
+<li><code>conf/databases.conf</code></li>
+<li><code>conf/skiptables.conf</code></li>
+</ul>
+
+<p>Read the comments in all the config files for configuration hints.</p>
+
+<h2>Usage</h2>
+
+<p>Once configured you can run <code>mysql-svn.sh</code> without any options like this:</p>
+
+<div class="highlight">
+<pre><span class="nv">$ </span>./mysql-svn.sh</pre>
+</div>
+
+<p>The script does not report any status to the command line. This is because it is primarily designed to be invoked by a scheduler like <em>cron</em>. Check the output in the log file at <code>mysql-svn.log</code> for details of fatal errors, warnings and generally what happened during the backup run.</p>
 
 <h2>Restoring from your backups</h2>
 
@@ -62,10 +80,8 @@
 
 <div class="highlight">
 <pre><span class="nv">$ </span>mysql -u root -p -e <span class="s2">"CREATE DATABASE \`my_database\`;"</span>
-<span class="nv">$ </span>cat my_database/*.sql | mysql -u root -p my_database
-</pre>
+<span class="nv">$ </span>cat my_database/*.sql | mysql -u root -p my_database</pre>
 </div>
-
 
 <p>This will create the database and then concatenate the sql files and pass them through the mysql client to be executed.</p>
 
@@ -74,6 +90,7 @@
 <p>MySQL SVN Backup is distributed under the MIT license.</p>
 
 <p>Logo from icons by <a href="http://p.yusukekamiyamane.com/">Yusuke Kamiyamane</a>.</p>
+
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/red-ant">red-ant</a></p>
