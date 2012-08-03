@@ -33,15 +33,26 @@ Dependencies
 Configuration
 -------------
 
-Copy all the conf/*.conf.example files to conf/*.conf
+Move all the `conf/*.conf.example` files to `conf/*.conf`, here's a one-liner for that:
+
+	$ for FILE in test/*.example; do mv $FILE ${FILE%.example}; done
 
 You should end up with:
 
-* conf/local.conf
-* conf/databases.conf
-* conf/skiptables.conf
+* `conf/local.conf`
+* `conf/databases.conf`
+* `conf/skiptables.conf`
 
-Read the comments in all the config files for configuration hints. Check the output in the log file (mysql-svn.log) for details of fatal errors.
+Read the comments in all the config files for configuration hints.
+
+Usage
+-----
+
+Once configured you can run `mysql-svn.sh` without any options like this:
+
+	$ ./mysql-svn.sh
+
+The script does not report any status to the command line. This is because it is primarily designed to be invoked by a scheduler like *cron*. Check the output in the log file at `mysql-svn.log` for details of fatal errors, warnings and generally what happened during the backup run.
 
 Restoring from your backups
 ---------------------------
