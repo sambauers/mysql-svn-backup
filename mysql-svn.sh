@@ -179,18 +179,18 @@ do
 	then
 		continue;
 	fi
-	
+
 	echo ">>>    * Database: $DATABASE" >>$LOGFILE 2>&1;
-	
-	# Create 
+
+	# Create
 	if [ ! -d $DUMPDIR/$DATABASE ];
 	then
 		mkdir -p $DUMPDIR/$DATABASE >>$LOGFILE 2>&1;
 		chmod 777 $DUMPDIR/$DATABASE >>$LOGFILE 2>&1;
 	fi
-	
+
 	TABLES=`$MYSQL $MYSQLHOST $MYSQLUSER $MYSQLPASS -B -N -e "SHOW TABLES;" $DATABASE`;
-	
+
 	for TABLE in $TABLES;
 	do
 		# Skip certain tables
@@ -200,9 +200,9 @@ do
 			echo "!!!      - $TABLE (skipped)" >>$LOGFILE 2>&1;
 			continue;
 		fi
-		
+
 		echo ">>>      - $TABLE" >>$LOGFILE 2>&1;
-		$MYSQLDUMP $MYSQLHOST $MYSQLUSER $MYSQLPASS --skip-dump-date --extended-insert --hex-blob --order-by-primary --quick --log-error=$DUMPDIR/$DATABASE/errors.log -r $DUMPDIR/$DATABASE/$TABLE.sql $DATABASE $TABLE >>$LOGFILE 2>&1;
+		$MYSQLDUMP $MYSQLHOST $MYSQLUSER $MYSQLPASS --skip-dump-date --skip-extended-insert --hex-blob --order-by-primary --quick --log-error=$DUMPDIR/$DATABASE/errors.log -r $DUMPDIR/$DATABASE/$TABLE.sql $DATABASE $TABLE >>$LOGFILE 2>&1;
 	done
 done
 
