@@ -1,7 +1,11 @@
+![MySQL SVN Backup logo](http://red-ant.github.com/mysql-svn-backup/images/mysql-svn-backup.png)
+
 MySQL SVN Backup
 ================
 
 MySQL SVN Backup provides an easy way to backup your MySQL database to an SVN repository.
+
+This project is maintained by [Red Ant](http://redant.com.au/ "Visit Red Ant's website").
 
 The pretty version of this information is [over here](http://red-ant.github.com/mysql-svn-backup/ "MySQL SVN Backup on GitHub Pages").
 
@@ -54,4 +58,4 @@ License
 
 MySQL SVN Backup is distributed under the MIT license.
 
-This project is maintained by [Red Ant](http://redant.com.au/ "Visit Red Ant's website").
+Logo from icons by [Yusuke Kamiyamane](http://p.yusukekamiyamane.com/ "Visit Yusuke Kamiyamane's website").
