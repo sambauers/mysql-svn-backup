@@ -27,9 +27,9 @@ BASE=`readlink -f $0`;
 BASE=$( dirname $BASE );
 
 # Include externally set variables
-if [ -f $BASE/conf.local ];
+if [ -f $BASE/conf/local.conf ];
 then
-	. $BASE/conf.local
+	. $BASE/conf/local.conf
 fi
 
 # Check for existence of critical SVN variables
@@ -50,10 +50,10 @@ then
 fi
 
 # Array of databases to backup
-DATABASES=`cat $BASE/conf.databases`;
+DATABASES=`cat $BASE/conf/databases.conf`;
 
 # Array of tables to skip, leave blank to backup all
-SKIPTABLES=`cat $BASE/conf.skiptables`;
+SKIPTABLES=`cat $BASE/conf/skiptables.conf`;
 
 # Defaults - Storage
 if [ -z $LOGFILE ]; then LOGFILE=$BASE'/mysql-svn.log'; fi
