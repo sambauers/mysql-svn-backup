@@ -1,5 +1,3 @@
-![MySQL SVN Backup logo](http://red-ant.github.com/mysql-svn-backup/images/mysql-svn-backup.png)
-
 MySQL SVN Backup
 ================
 
