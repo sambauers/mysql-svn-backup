@@ -46,7 +46,13 @@ Read the comments in all the config files for configuration hints.
 Usage
 -----
 
-Once configured you can run `mysql-svn.sh` without any options like this:
+Once configured you can run `mysql-svn.sh`
+
+You will probably need to make the script executable:
+
+	$ chmod 755 mysql-svn.sh
+
+Then run the script without any options like this:
 
 	$ ./mysql-svn.sh
 
