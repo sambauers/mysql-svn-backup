@@ -71,6 +71,6 @@ This will create the database and then concatenate the sql files and pass them t
 License
 -------
 
-MySQL SVN Backup is distributed under the MIT license.
+MySQL SVN Backup is distributed under the MIT license. Go nuts.
 
 Logo from icons by [Yusuke Kamiyamane](http://p.yusukekamiyamane.com/ "Visit Yusuke Kamiyamane's website").
