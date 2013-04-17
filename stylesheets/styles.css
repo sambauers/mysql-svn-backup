@@ -95,6 +95,20 @@ img {
   max-width:100%;
 }
 
+ul.social {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  float: right;
+}
+
+ul.social li {
+  padding: 0;
+  margin: 0;
+  width: 300px;
+  float: left;
+}
+
 header {
   width:270px;
   float:left;
@@ -123,24 +137,11 @@ header ul {
   width:270px;
 }
 
-header ul.social {
-  background: none;
-  border: none;
-  height: auto;
-  box-shadow: none;
-  border-radius: 0;
-}
-
 header li {
   width:89px;
   float:left;
   border-right:1px solid #d2d2d2;
   height:40px;
-}
-
-header ul.social li {
-  border-right: none;
-  height: auto;
 }
 
 header ul a {
