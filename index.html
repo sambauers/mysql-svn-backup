@@ -34,6 +34,13 @@
         }
       }(document, 'script', 'twitter-wjs');
     </script>
+    <script type="text/javascript">
+      (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+      })();
+    </script>
     <div class="wrapper">
       <header>
         <h1>MySQL SVN Backup</h1>
@@ -50,6 +57,9 @@
           </li>
           <li>
             <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://mysql-svn-backup.redant.com.au/" data-text="MySQL SVN Backup script for those times when an &quot;enterprise&quot; solution is overkill." data-via="r_e_d_a_n_t" data-dnt="true">Tweet</a>
+          </li>
+          <li>
+            <div class="g-plusone" data-size="medium" data-href="http://mysql-svn-backup.redant.com.au/"></div>
           </li>
         </ul>
       </header>
