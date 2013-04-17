@@ -141,8 +141,6 @@ header li {
 header ul.social li {
   border-right: none;
   height: auto;
-  width: auto;
-  margin: 0 10px 10px 0;
 }
 
 header ul a {
