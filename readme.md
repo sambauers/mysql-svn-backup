@@ -33,7 +33,7 @@ Configuration
 
 Move all the `conf/*.conf.example` files to `conf/*.conf`, here's a one-liner for that:
 
-	$ for FILE in test/*.example; do mv $FILE ${FILE%.example}; done
+	$ for FILE in conf/*.example; do mv $FILE ${FILE%.example}; done
 
 You should end up with:
 
