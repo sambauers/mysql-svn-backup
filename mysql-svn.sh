@@ -117,6 +117,7 @@ echo ">>> 2. Normalise working copy" >>$LOGFILE 2>&1;
 echo ">>>" >>$LOGFILE 2>&1;
 
 # Check that there is a working copy
+echo ">>> - Checking for a working copy on the local dump directory" >>$LOGFILE 2>&1;
 $SVN info $DUMPDIR >>$LOGFILE 2>&1;
 LASTRESULT=$?;
 echo ">>>" >>$LOGFILE 2>&1;
@@ -141,6 +142,9 @@ then
 		echo "!!!" >>$LOGFILE 2>&1;
 		exit 2;
 	fi
+else
+	echo ">>> - Updating local dump directory from remote Subversion repository" >>$LOGFILE 2>&1;
+	$SVN update --username $SVNUSER --password $SVNPASS --no-auth-cache --non-interactive --accept theirs-full $DUMPDIR >>$LOGFILE 2>&1;
 fi
 
 # Add authorisation if present
