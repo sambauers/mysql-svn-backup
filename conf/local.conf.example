@@ -1,20 +1,99 @@
-# MySQL Host and authentication
-MYSQLHOST='localhost';
-MYSQLUSER='backups';
-MYSQLPASS='goodpassword';
+## MySQL Host and authentication ##
 
-# SVN Host and Authentication
+# MYSQLHOST - This is the MySQL servers hostname that you
+# want to backup. This can potentially be blank to use the
+# system default MySQL host, but 'localhost' is usually
+# what most people want.
+
+MYSQLHOST='localhost';
+
+# MYSQLUSER - This is the MySQL user that has access to the
+# databases and tables that you want to backup. You should
+# make this a unique user with restricted read-only rights.
+
+MYSQLUSER='backups';
+
+# MYSQLPASS - This is the password for the MySQL user. Make
+# it a really good password.
+
+MYSQLPASS='reallygoodpassword';
+
+
+## SVN Host and Authentication ##
+
+# SVNUSER - This is the Subversion user that will connect
+# to the remote Subversion repository and commit backups.
+
 SVNUSER='backups';
-SVNPASS='foobar';
+
+# SVNPASS - This is the password for the Subversion user.
+# Make it really good as well.
+
+SVNPASS='alsoagoodpassword';
+
+# SVNURI - This is the full path to the Subversion repository.
+# If you are not using HTTPS protocol you ought to seriously
+# consider it. Backups are committed directly into this path,
+# not into trunk, or a branch.
+
 SVNURI='https://svn.example.org/backups/';
 
-# Storage (can be relative or absolute path) - defaults are shown
+
+## Storage ##
+
+# LOGFILE - The location of the log file that will collect
+# the output from the script (can be relative to script
+# location or absolute path). Default is shown.
+
 #LOGFILE='mysql-svn.log';
+
+# DUMPDIR - The location of the directory where mysqldump
+# will store backup files that it creates (can be relative
+# to script location or absolute path). Default is shown.
+
 #DUMPDIR='dump/';
 
-# MySQL Executables - defaults are shown
+# DATATYPES - The types of data you wish to store from the
+# backup. This value is an array, so if you specify more
+# than one type, multiple data files will be created for
+# each table.
+
+# Backup all data (this is the default) -
+#DATATYPES='all';
+
+# Backup the schema data -
+#DATATYPES='schema';
+
+# Backup the content data -
+#DATATYPES='data';
+
+# Backup the schema and data in separate files -
+#DATATYPES='schema
+#data';
+
+# Backup all data, schema and content in separate files
+# (why would you want to do this?) -
+#DATATYPES='all
+#schema
+#data';
+
+
+## MySQL Executables ##
+
+# MYSQL - This is the path to the MySQL command line
+# client. Default is shown.
+
 #MYSQL='/usr/bin/mysql';
+
+# MYSQLDUMP - This is the path to the MySQL Dump command
+# line client. Default is shown.
+
 #MYSQLDUMP='/usr/bin/mysqldump';
 
-# SVN Executable - default is shown
+
+## SVN Executable ##
+
+# SVN - This is the path to the Subversion command line
+# client. Default is shown.
+
 #SVN='/usr/bin/svn';
