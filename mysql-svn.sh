@@ -2,7 +2,7 @@
 
 # MySQL SVN Backup
 #
-# Copyright (c) 2012 Red Ant
+# Copyright (c) 2012-2013 Red Ant
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -57,7 +57,8 @@ SKIPTABLES=`cat $BASE/conf/skiptables.conf`;
 
 # Defaults - Storage
 if [ -z $LOGFILE ]; then LOGFILE=$BASE'/mysql-svn.log'; fi
-if [ -z $DUMPDIR ]; then DUMPDIR=$BASE'/dump/'; fi
+if [ -z $DUMPDIR ]; then DUMPDIR=$BASE'/dump'; fi
+if [ -z $DATATYPES ]; then DATATYPES='all'; fi
 
 # Defaults - MySQL Executables
 if [ -z $MYSQL ]; then MYSQL='/usr/bin/mysql'; fi
@@ -202,14 +203,45 @@ do
 		fi
 
 		echo ">>>      - $TABLE" >>$LOGFILE 2>&1;
-		$MYSQLDUMP $MYSQLHOST $MYSQLUSER $MYSQLPASS --skip-dump-date --skip-extended-insert --hex-blob --order-by-primary --quick --log-error=$DUMPDIR/$DATABASE/errors.log --result_file=$DUMPDIR/$DATABASE/$TABLE.sql $DATABASE $TABLE >>$LOGFILE 2>&1;
+		
+		# Do a distinct dump for each data type (usually it will just be "all")
+		for DATATYPE in $DATATYPES;
+		do
+			case "$DATATYPE" in
+				all)
+					# Don't skip anything
+					OPTS='';
+					SUFFIX='';
+					;;
+				
+				schema)
+					# Skip table content output
+					OPTS='--no-data';
+					SUFFIX='-schema';
+					;;
+				data)
+					# Skip table creation output
+					OPTS='--no-create-info';
+					SUFFIX='-data';
+					;;
+				*)
+					# Skip dump for unknown types
+					echo "!!!         DATATYPE: $DATATYPE (skipped unknown)" >>$LOGFILE 2>&1;
+					continue;
+					;;
+			esac
+
+			echo ">>>         DATATYPE: $DATATYPE" >>$LOGFILE 2>&1;
+
+			$MYSQLDUMP $MYSQLHOST $MYSQLUSER $MYSQLPASS $OPTS --skip-dump-date --skip-extended-insert --hex-blob --order-by-primary --quick --log-error=$DUMPDIR/$DATABASE/errors.log --result_file=$DUMPDIR/$DATABASE/$TABLE$SUFFIX.sql $DATABASE $TABLE >>$LOGFILE 2>&1;
+		done		
 	done
 done
 
 echo ">>>" >>$LOGFILE 2>&1;
 echo ">>> 5. Add new files to working copy" >>$LOGFILE 2>&1;
 echo ">>>" >>$LOGFILE 2>&1;
-$SVN add --quiet --force $DUMPDIR* >>$LOGFILE 2>&1;
+$SVN add --quiet --force $DUMPDIR/* >>$LOGFILE 2>&1;
 echo ">>>" >>$LOGFILE 2>&1;
 echo ">>> 6. Commit files to working copy" >>$LOGFILE 2>&1;
 echo ">>>" >>$LOGFILE 2>&1;
