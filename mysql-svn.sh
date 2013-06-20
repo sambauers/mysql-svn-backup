@@ -117,7 +117,7 @@ echo ">>> 2. Normalise working copy" >>$LOGFILE 2>&1;
 echo ">>>" >>$LOGFILE 2>&1;
 
 # Check that there is a working copy
-echo ">>> - Checking for a working copy on the local dump directory" >>$LOGFILE 2>&1;
+echo ">>> - Check for a working copy on the local dump directory" >>$LOGFILE 2>&1;
 $SVN info $DUMPDIR >>$LOGFILE 2>&1;
 LASTRESULT=$?;
 echo ">>>" >>$LOGFILE 2>&1;
@@ -143,8 +143,21 @@ then
 		exit 2;
 	fi
 else
-	echo ">>> - Updating local dump directory from remote Subversion repository" >>$LOGFILE 2>&1;
+	echo ">>> - Update local dump directory from remote Subversion repository" >>$LOGFILE 2>&1;
 	$SVN update --username $SVNUSER --password $SVNPASS --no-auth-cache --non-interactive --accept theirs-full $DUMPDIR >>$LOGFILE 2>&1;
+	LASTRESULT=$?;
+	echo ">>>" >>$LOGFILE 2>&1;
+
+	# Fatal error if can't update
+	if [[ $LASTRESULT != 0 ]];
+	then
+		echo "!!! FATAL ERROR: The working copy could not be updated." >>$LOGFILE 2>&1;
+		echo "!!!              Run the following command to determine the error." >>$LOGFILE 2>&1;
+		echo "!!!" >>$LOGFILE 2>&1;
+		echo "!!!              $SVN update --username $SVNUSER --password ********** --no-auth-cache --non-interactive --accept theirs-full $DUMPDIR" >>$LOGFILE 2>&1;
+		echo "!!!" >>$LOGFILE 2>&1;
+		exit 3;
+	fi
 fi
 
 # Add authorisation if present
@@ -168,7 +181,7 @@ then
 	echo "!!!" >>$LOGFILE 2>&1;
 	echo "!!!              $MYSQL $MYSQLHOST $MYSQLUSER --password=********** --batch --skip-column-names --execute=\"SHOW DATABASES;\"" >>$LOGFILE 2>&1;
 	echo "!!!" >>$LOGFILE 2>&1;
-	exit 3;
+	exit 4;
 fi
 
 echo ">>>" >>$LOGFILE 2>&1;
