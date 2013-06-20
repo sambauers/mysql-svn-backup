@@ -49,9 +49,10 @@ SVNURI='https://svn.example.org/backups/';
 
 # DUMPDIR - The location of the directory where mysqldump
 # will store backup files that it creates (can be relative
-# to script location or absolute path). Default is shown.
+# to script location or absolute path). Don't add a trailing
+# slash. Default is shown.
 
-#DUMPDIR='dump/';
+#DUMPDIR='dump';
 
 # DATATYPES - The types of data you wish to store from the
 # backup. This value is an array, so if you specify more
