@@ -143,8 +143,8 @@ then
 fi
 
 # Add authorisation if present
-if [[ "$MYSQLHOST" != "" ]]; then MYSQLHOST="-h $MYSQLHOST"; fi
-if [[ "$MYSQLUSER" != "" ]]; then MYSQLUSER="-u $MYSQLUSER"; fi
+if [[ "$MYSQLHOST" != "" ]]; then MYSQLHOST="--host=$MYSQLHOST"; fi
+if [[ "$MYSQLUSER" != "" ]]; then MYSQLUSER="--user=$MYSQLUSER"; fi
 if [[ "$MYSQLPASS" != "" ]]; then MYSQLPASS="--password=$MYSQLPASS"; fi
 
 echo ">>>" >>$LOGFILE 2>&1;
@@ -152,7 +152,7 @@ echo ">>> 3. Get valid databases" >>$LOGFILE 2>&1;
 echo ">>>" >>$LOGFILE 2>&1;
 
 # Get all databases
-ALLDATABASES=`$MYSQL $MYSQLHOST $MYSQLUSER $MYSQLPASS -B -N -e "SHOW DATABASES;"`;
+ALLDATABASES=`$MYSQL $MYSQLHOST $MYSQLUSER $MYSQLPASS --batch --skip-column-names --execute="SHOW DATABASES;"`;
 LASTRESULT=$?;
 
 # Fatal error if can't connect
@@ -161,7 +161,7 @@ then
 	echo "!!! FATAL ERROR: Could not collect all database names." >>$LOGFILE 2>&1;
 	echo "!!!              Run the following command to determine the error." >>$LOGFILE 2>&1;
 	echo "!!!" >>$LOGFILE 2>&1;
-	echo "!!!              $MYSQL $MYSQLHOST $MYSQLUSER --password=********** -B -N -e \"SHOW DATABASES;\"" >>$LOGFILE 2>&1;
+	echo "!!!              $MYSQL $MYSQLHOST $MYSQLUSER --password=********** --batch --skip-column-names --execute=\"SHOW DATABASES;\"" >>$LOGFILE 2>&1;
 	echo "!!!" >>$LOGFILE 2>&1;
 	exit 3;
 fi
@@ -185,11 +185,11 @@ do
 	# Create
 	if [ ! -d $DUMPDIR/$DATABASE ];
 	then
-		mkdir -p $DUMPDIR/$DATABASE >>$LOGFILE 2>&1;
+		mkdir --parents $DUMPDIR/$DATABASE >>$LOGFILE 2>&1;
 		chmod 777 $DUMPDIR/$DATABASE >>$LOGFILE 2>&1;
 	fi
 
-	TABLES=`$MYSQL $MYSQLHOST $MYSQLUSER $MYSQLPASS -B -N -e "SHOW TABLES;" $DATABASE`;
+	TABLES=`$MYSQL $MYSQLHOST $MYSQLUSER $MYSQLPASS --batch --skip-column-names --execute="SHOW TABLES;" $DATABASE`;
 
 	for TABLE in $TABLES;
 	do
@@ -202,19 +202,19 @@ do
 		fi
 
 		echo ">>>      - $TABLE" >>$LOGFILE 2>&1;
-		$MYSQLDUMP $MYSQLHOST $MYSQLUSER $MYSQLPASS --skip-dump-date --skip-extended-insert --hex-blob --order-by-primary --quick --log-error=$DUMPDIR/$DATABASE/errors.log -r $DUMPDIR/$DATABASE/$TABLE.sql $DATABASE $TABLE >>$LOGFILE 2>&1;
+		$MYSQLDUMP $MYSQLHOST $MYSQLUSER $MYSQLPASS --skip-dump-date --skip-extended-insert --hex-blob --order-by-primary --quick --log-error=$DUMPDIR/$DATABASE/errors.log --result_file=$DUMPDIR/$DATABASE/$TABLE.sql $DATABASE $TABLE >>$LOGFILE 2>&1;
 	done
 done
 
 echo ">>>" >>$LOGFILE 2>&1;
 echo ">>> 5. Add new files to working copy" >>$LOGFILE 2>&1;
 echo ">>>" >>$LOGFILE 2>&1;
-$SVN add -q $DUMPDIR* >>$LOGFILE 2>&1;
+$SVN add --quiet --force $DUMPDIR* >>$LOGFILE 2>&1;
 echo ">>>" >>$LOGFILE 2>&1;
 echo ">>> 6. Commit files to working copy" >>$LOGFILE 2>&1;
 echo ">>>" >>$LOGFILE 2>&1;
 DATEEND=`date`;
-$SVN commit --username $SVNUSER --password $SVNPASS --no-auth-cache --non-interactive -m "MySQL-SVN Backup $DATEEND" $DUMPDIR >>$LOGFILE 2>&1;
+$SVN commit --username $SVNUSER --password $SVNPASS --no-auth-cache --non-interactive --message "MySQL-SVN Backup $DATEEND" $DUMPDIR >>$LOGFILE 2>&1;
 echo ">>>" >>$LOGFILE 2>&1;
 
 # End output
