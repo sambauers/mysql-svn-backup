@@ -38,7 +38,7 @@
     <div class="wrapper">
       <header>
         <h1>MySQL SVN Backup</h1>
-        <p>MySQL SVN Backup provides an easy way to backup your MySQL databases to an SVN or GIT repository. Some rationale for it's existence is on <a href="http://redant.com.au/how-we-do/backing-up-mysql-into-subversion-using-mysql-svn-backup/" title="Dolphins with lasers like to back up their databases to Subversion, how about you?">this blog post</a>.</p>
+        <p>MySQL SVN Backup provides an easy way to backup your MySQL databases to an SVN or GIT repository.</p>
         <p class="view"><a href="https://github.com/red-ant/mysql-svn-backup">View the Project on GitHub <small>red-ant/mysql-svn-backup</small></a></p>
         <ul>
           <li><a href="https://github.com/red-ant/mysql-svn-backup/zipball/master">Download <strong>ZIP File</strong></a></li>
@@ -65,6 +65,8 @@
 <p>The primary advantage is in having complete incremental historical snapshots of your database(s) available for potentially a longer time than standard monolithic database dumps.</p>
 
 <p>If you find you need to transpose databases to other locations a lot, then storing your backups in a remote version control repository can help to speed things up. Instead of waiting for an entire dump to be transferred, you can just keep a local working copy of the backup and update the incremental changes using Subversion or GIT before importing the data into MySQL.</p>
+
+<p>Some rationale for it's existence is on <a href="http://redant.com.au/how-we-do/backing-up-mysql-into-subversion-using-mysql-svn-backup/" title="Dolphins with lasers like to back up their databases to Subversion, how about you?">this blog post</a>.</p>
 
 <p>This method and tool is not recommended for huge databases (or at least it hasn't been tested). It is probably also not much good for databases that store a lot of frequently changing binary data.</p>
 
