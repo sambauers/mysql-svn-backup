@@ -23,8 +23,7 @@
 # SOFTWARE.
 
 # Find the base directory (resolving symbolic links)
-BASE=`readlink -f $0`;
-BASE=$( dirname $BASE );
+BASE=$( pwd -P );
 
 # Include externally set variables
 if [ -f $BASE/conf/local.conf ];
@@ -32,22 +31,64 @@ then
 	. $BASE/conf/local.conf
 fi
 
-# Check for existence of critical SVN variables
-if [ -z $SVNUSER ];
+# Output echo helper functions
+function echo_i() {
+	echo "!!! INITIALIZATION ERROR:" $1;
+}
+function echo_o() {
+	echo ">>>" $1;
+}
+function echo_w() {
+	echo "!!!" $1;
+}
+function echo_b() {
+	echo_o "===============================================";
+	echo_o $1;
+	echo_o "===============================================";
+}
+
+# Check which version control system is being used
+
+# Check for existence of critical variable
+if [ -z $REPOTYPE ];
 then
-	echo "!!! INITIALIZATION ERROR: Missing SVNUSER in variables.";
-	exit 10;
+	echo_i "Missing REPOTYPE in variables.";
+	exit 100;
 fi
-if [ -z $SVNPASS ];
-then
-	echo "!!! INITIALIZATION ERROR: Missing SVNPASS in variables.";
-	exit 11;
-fi
-if [ -z $SVNURI ];
-then
-	echo "!!! INITIALIZATION ERROR: Missing SVNURI in variables.";
-	exit 12;
-fi
+
+case $REPOTYPE in
+	'SVN' )
+		# Check for existence of critical SVN variables
+		if [ -z $SVNUSER ];
+		then
+			echo_i "Missing SVNUSER in variables.";
+			exit 110;
+		fi
+		if [ -z $SVNPASS ];
+		then
+			echo_i "Missing SVNPASS in variables.";
+			exit 111;
+		fi
+		if [ -z $SVNURI ];
+		then
+			echo_i "Missing SVNURI in variables.";
+			exit 112;
+		fi
+	;;
+	'GIT' )
+		# Check for existence of critical GIT variables
+		if [ -z $GITURI ];
+		then
+			echo_i "Missing GITURI in variables.";
+			exit 120;
+		fi
+		if [ -z $GITBRANCH ];
+		then
+			echo_i "Missing GITBRANCH in variables.";
+			exit 121;
+		fi
+	;;
+esac
 
 # Array of databases to backup
 DATABASES=`cat $BASE/conf/databases.conf`;
@@ -56,16 +97,28 @@ DATABASES=`cat $BASE/conf/databases.conf`;
 SKIPTABLES=`cat $BASE/conf/skiptables.conf`;
 
 # Defaults - Storage
-if [ -z $LOGFILE ]; then LOGFILE=$BASE'/mysql-svn.log'; fi
-if [ -z $DUMPDIR ]; then DUMPDIR=$BASE'/dump'; fi
-if [ -z $DATATYPES ]; then DATATYPES='all'; fi
+if [ -z $LOGSTORE ];
+then
+	LOGSTORE='file';
+else
+	if [[ "$LOGSTORE" != "screen" ]];
+	then
+		LOGSTORE='file';
+	fi
+fi
+if [ -z $LOGFILE ];   then LOGFILE=$BASE'/mysql-svn.log';  fi
+if [ -z $DUMPDIR ];   then DUMPDIR=$BASE'/dump';           fi
+if [ -z $DATATYPES ]; then DATATYPES='all';                fi
 
 # Defaults - MySQL Executables
-if [ -z $MYSQL ]; then MYSQL='/usr/bin/mysql'; fi
+if [ -z $MYSQL ];     then MYSQL='/usr/bin/mysql';         fi
 if [ -z $MYSQLDUMP ]; then MYSQLDUMP='/usr/bin/mysqldump'; fi
 
 # Defaults - SVN Executable
-if [ -z $SVN ]; then SVN='/usr/bin/svn'; fi
+if [ -z $SVN ];       then SVN='/usr/bin/svn';             fi
+
+# Defaults - GIT Executable
+if [ -z $GIT ];       then GIT='/usr/bin/git';             fi
 
 # in_array() function
 function in_array() {
@@ -81,82 +134,125 @@ function in_array() {
 	return 1
 }
 
+# Store output to a file if required
+if [[ "$LOGSTORE" == "file" ]];
+then
+	exec >> $LOGFILE 2>&1;
+fi
+
 # Start output
 DATESTART=`date`;
-echo ">>> ===============================================" >>$LOGFILE 2>&1;
-echo ">>> Commence Backup at $DATESTART" >>$LOGFILE 2>&1;
-echo ">>> ===============================================" >>$LOGFILE 2>&1;
-echo ">>>" >>$LOGFILE 2>&1;
-echo ">>> 1. Normalise storage" >>$LOGFILE 2>&1;
-echo ">>>" >>$LOGFILE 2>&1;
+echo_b "Commence Backup at $DATESTART";
+echo_o;
+echo_o "1. Normalise storage";
+echo_o;
 
 # Create storage directory
+echo_o "- Check for a local dump directory";
 if [ ! -d $DUMPDIR ];
 then
-	echo "!!! WARNING: No storage directory found at $DUMPDIR." >>$LOGFILE 2>&1;
-	echo "!!!          Attempting to create storage directory." >>$LOGFILE 2>&1;
-	echo "!!!" >>$LOGFILE 2>&1;
-	mkdir -p $DUMPDIR >>$LOGFILE 2>&1;
-	chmod 777 $DUMPDIR >>$LOGFILE 2>&1;
-	echo "!!!" >>$LOGFILE 2>&1;
+	echo_w "WARNING: No storage directory found at $DUMPDIR.";
+	echo_w "         Attempting to create storage directory.";
+	echo_w;
+	mkdir -p $DUMPDIR;
+	chmod 777 $DUMPDIR;
+	echo_w;
 
 	# Test that the directory creation worked
 	if [ ! -d $DUMPDIR ];
 	then
-		echo "!!! FATAL ERROR: The storage directory could not be created." >>$LOGFILE 2>&1;
-		echo "!!!              Run the following command to determine the error." >>$LOGFILE 2>&1;
-		echo "!!!" >>$LOGFILE 2>&1;
-		echo "!!!              mkdir -p $DUMPDIR" >>$LOGFILE 2>&1;
-		echo "!!!" >>$LOGFILE 2>&1;
-		exit 1;
+		echo_w "FATAL ERROR: The storage directory could not be created.";
+		echo_w "             Run the following command to determine the error.";
+		echo_w;
+		echo_w "             mkdir -p $DUMPDIR";
+		echo_w;
+		exit 500;
 	fi
 fi
 
-echo ">>>" >>$LOGFILE 2>&1;
-echo ">>> 2. Normalise working copy" >>$LOGFILE 2>&1;
-echo ">>>" >>$LOGFILE 2>&1;
+echo_o;
+echo_o "2. Normalise working copy";
+echo_o;
 
 # Check that there is a working copy
-echo ">>> - Check for a working copy on the local dump directory" >>$LOGFILE 2>&1;
-$SVN info $DUMPDIR >>$LOGFILE 2>&1;
-LASTRESULT=$?;
-echo ">>>" >>$LOGFILE 2>&1;
+echo_o "- Check for a working copy on the local dump directory";
+case $REPOTYPE in
+	'SVN' )
+		$SVN info $DUMPDIR;
+		LASTRESULT=$?;
+	;;
+	'GIT' )
+		$GIT status $DUMPDIR;
+		LASTRESULT=$?;
+	;;
+esac
+echo_o;
 
 # Initialise working copy if not present
 if [[ $LASTRESULT != 0 ]];
 then
-	echo "!!! WARNING: No working copy found in $DUMPDIR." >>$LOGFILE 2>&1;
-	echo "!!! WARNING: Attempting to initialise working copy." >>$LOGFILE 2>&1;
-	echo "!!!" >>$LOGFILE 2>&1;
-	$SVN checkout --username $SVNUSER --password $SVNPASS --no-auth-cache --non-interactive $SVNURI $DUMPDIR >>$LOGFILE 2>&1;
-	LASTRESULT=$?;
-	echo "!!!" >>$LOGFILE 2>&1;
+	echo_w "WARNING: No working copy found in $DUMPDIR.";
+	echo_w "WARNING: Attempting to initialise working copy.";
+	echo_w;
+	case $REPOTYPE in
+		'SVN' )
+			$SVN checkout --username $SVNUSER --password $SVNPASS --no-auth-cache --non-interactive $SVNURI $DUMPDIR;
+			LASTRESULT=$?;
+		;;
+		'GIT' )
+			$GIT clone --branch $GITBRANCH $GITURI $DUMPDIR;
+			LASTRESULT=$?;
+		;;
+	esac
+	echo_w;
 
 	# Fatal error if can't initialise
 	if [[ $LASTRESULT != 0 ]];
 	then
-		echo "!!! FATAL ERROR: The working copy could not be initialised." >>$LOGFILE 2>&1;
-		echo "!!!              Run the following command to determine the error." >>$LOGFILE 2>&1;
-		echo "!!!" >>$LOGFILE 2>&1;
-		echo "!!!              $SVN checkout --username $SVNUSER --password ********** --no-auth-cache --non-interactive $SVNURI $DUMPDIR" >>$LOGFILE 2>&1;
-		echo "!!!" >>$LOGFILE 2>&1;
-		exit 2;
+		echo_w "FATAL ERROR: The working copy could not be initialised.";
+		echo_w "             Run the following command to determine the error.";
+		echo_w;
+		case $REPOTYPE in
+			'SVN' )
+				echo_w "             $SVN checkout --username $SVNUSER --password ********** --no-auth-cache --non-interactive $SVNURI $DUMPDIR";
+				;;
+			'GIT' )
+				echo_w "             $GIT clone --branch $GITBRANCH $GITURI $DUMPDIR";
+				;;
+		esac
+		echo_w;
+		exit 501;
 	fi
 else
-	echo ">>> - Update local dump directory from remote Subversion repository" >>$LOGFILE 2>&1;
-	$SVN update --username $SVNUSER --password $SVNPASS --no-auth-cache --non-interactive --accept theirs-full $DUMPDIR >>$LOGFILE 2>&1;
-	LASTRESULT=$?;
-	echo ">>>" >>$LOGFILE 2>&1;
+	echo_o "- Update local dump directory from remote Subversion repository";
+	case $REPOTYPE in
+		'SVN' )
+			$SVN update --username $SVNUSER --password $SVNPASS --no-auth-cache --non-interactive --accept theirs-full $DUMPDIR;
+			LASTRESULT=$?;
+		;;
+		'GIT' )
+			$GIT pull $DUMPDIR;
+			LASTRESULT=$?;
+		;;
+	esac
+	echo_o;
 
 	# Fatal error if can't update
 	if [[ $LASTRESULT != 0 ]];
 	then
-		echo "!!! FATAL ERROR: The working copy could not be updated." >>$LOGFILE 2>&1;
-		echo "!!!              Run the following command to determine the error." >>$LOGFILE 2>&1;
-		echo "!!!" >>$LOGFILE 2>&1;
-		echo "!!!              $SVN update --username $SVNUSER --password ********** --no-auth-cache --non-interactive --accept theirs-full $DUMPDIR" >>$LOGFILE 2>&1;
-		echo "!!!" >>$LOGFILE 2>&1;
-		exit 3;
+		echo_w "FATAL ERROR: The working copy could not be updated.";
+		echo_w "             Run the following command to determine the error.";
+		echo_w;
+		case $REPOTYPE in
+			'SVN' )
+				echo_w "             $SVN update --username $SVNUSER --password ********** --no-auth-cache --non-interactive --accept theirs-full $DUMPDIR";
+			;;
+			'GIT' )
+				echo_w "             $GIT pull $DUMPDIR";
+			;;
+		esac
+		echo_w;
+		exit 502;
 	fi
 fi
 
@@ -165,9 +261,9 @@ if [[ "$MYSQLHOST" != "" ]]; then MYSQLHOST="--host=$MYSQLHOST"; fi
 if [[ "$MYSQLUSER" != "" ]]; then MYSQLUSER="--user=$MYSQLUSER"; fi
 if [[ "$MYSQLPASS" != "" ]]; then MYSQLPASS="--password=$MYSQLPASS"; fi
 
-echo ">>>" >>$LOGFILE 2>&1;
-echo ">>> 3. Get valid databases" >>$LOGFILE 2>&1;
-echo ">>>" >>$LOGFILE 2>&1;
+echo_o;
+echo_o "3. Get valid databases";
+echo_o;
 
 # Get all databases
 ALLDATABASES=`$MYSQL $MYSQLHOST $MYSQLUSER $MYSQLPASS --batch --skip-column-names --execute="SHOW DATABASES;"`;
@@ -176,17 +272,17 @@ LASTRESULT=$?;
 # Fatal error if can't connect
 if [[ $LASTRESULT != 0 ]];
 then
-	echo "!!! FATAL ERROR: Could not collect all database names." >>$LOGFILE 2>&1;
-	echo "!!!              Run the following command to determine the error." >>$LOGFILE 2>&1;
-	echo "!!!" >>$LOGFILE 2>&1;
-	echo "!!!              $MYSQL $MYSQLHOST $MYSQLUSER --password=********** --batch --skip-column-names --execute=\"SHOW DATABASES;\"" >>$LOGFILE 2>&1;
-	echo "!!!" >>$LOGFILE 2>&1;
-	exit 4;
+	echo_w "FATAL ERROR: Could not collect all database names.";
+	echo_w "             Run the following command to determine the error.";
+	echo_w;
+	echo_w "             $MYSQL $MYSQLHOST $MYSQLUSER --password=********** --batch --skip-column-names --execute=\"SHOW DATABASES;\"";
+	echo_w;
+	exit 503;
 fi
 
-echo ">>>" >>$LOGFILE 2>&1;
-echo ">>> 4. Dump tables" >>$LOGFILE 2>&1;
-echo ">>>" >>$LOGFILE 2>&1;
+echo_o;
+echo_o "4. Dump tables";
+echo_o;
 
 # Iterate over databases
 for DATABASE in $ALLDATABASES;
@@ -198,13 +294,13 @@ do
 		continue;
 	fi
 
-	echo ">>>    * Database: $DATABASE" >>$LOGFILE 2>&1;
+	echo_o "   * Database: $DATABASE";
 
 	# Create
 	if [ ! -d $DUMPDIR/$DATABASE ];
 	then
-		mkdir --parents $DUMPDIR/$DATABASE >>$LOGFILE 2>&1;
-		chmod 777 $DUMPDIR/$DATABASE >>$LOGFILE 2>&1;
+		mkdir --parents $DUMPDIR/$DATABASE;
+		chmod 777 $DUMPDIR/$DATABASE;
 	fi
 
 	TABLES=`$MYSQL $MYSQLHOST $MYSQLUSER $MYSQLPASS --batch --skip-column-names --execute="SHOW TABLES;" $DATABASE`;
@@ -215,60 +311,74 @@ do
 		in_array "$DATABASE/$TABLE" "${SKIPTABLES[@]}"
 		if [[ $? = 0 ]];
 		then
-			echo "!!!      - $TABLE (skipped)" >>$LOGFILE 2>&1;
+			echo_w "     - $TABLE (skipped)";
 			continue;
 		fi
 
-		echo ">>>      - $TABLE" >>$LOGFILE 2>&1;
-		
+		echo_o "     - $TABLE";
+
 		# Do a distinct dump for each data type (usually it will just be "all")
 		for DATATYPE in $DATATYPES;
 		do
-			case "$DATATYPE" in
-				all)
+			case $DATATYPE in
+				'all')
 					# Don't skip anything
 					OPTS='';
 					SUFFIX='';
 					;;
-				
-				schema)
+
+				'schema')
 					# Skip table content output
 					OPTS='--no-data';
 					SUFFIX='-schema';
 					;;
-				data)
+				'data')
 					# Skip table creation output
 					OPTS='--no-create-info';
 					SUFFIX='-data';
 					;;
 				*)
 					# Skip dump for unknown types
-					echo "!!!         DATATYPE: $DATATYPE (skipped unknown)" >>$LOGFILE 2>&1;
+					echo_w "        DATATYPE: $DATATYPE (skipped unknown)";
 					continue;
 					;;
 			esac
 
-			echo ">>>         DATATYPE: $DATATYPE" >>$LOGFILE 2>&1;
+			echo_o "        DATATYPE: $DATATYPE";
 
-			$MYSQLDUMP $MYSQLHOST $MYSQLUSER $MYSQLPASS $OPTS --skip-dump-date --skip-extended-insert --hex-blob --order-by-primary --quick --log-error=$DUMPDIR/$DATABASE/errors.log --result_file=$DUMPDIR/$DATABASE/$TABLE$SUFFIX.sql $DATABASE $TABLE >>$LOGFILE 2>&1;
-		done		
+			$MYSQLDUMP $MYSQLHOST $MYSQLUSER $MYSQLPASS $OPTS --skip-dump-date --skip-extended-insert --hex-blob --order-by-primary --quick --log-error=$DUMPDIR/$DATABASE/errors.log --result_file=$DUMPDIR/$DATABASE/$TABLE$SUFFIX.sql $DATABASE $TABLE;
+		done
 	done
 done
 
-echo ">>>" >>$LOGFILE 2>&1;
-echo ">>> 5. Add new files to working copy" >>$LOGFILE 2>&1;
-echo ">>>" >>$LOGFILE 2>&1;
-$SVN add --quiet --force $DUMPDIR/* >>$LOGFILE 2>&1;
-echo ">>>" >>$LOGFILE 2>&1;
-echo ">>> 6. Commit files to working copy" >>$LOGFILE 2>&1;
-echo ">>>" >>$LOGFILE 2>&1;
+echo_o;
+echo_o "5. Add new files to working copy";
+echo_o;
+case $REPOTYPE in
+	'SVN' )
+		$SVN add --quiet --force $DUMPDIR/*;
+		;;
+	'GIT' )
+		$GIT add $DUMPDIR;
+		;;
+esac
+echo_o;
+echo_o "6. Commit files to working copy";
+echo_o;
 DATEEND=`date`;
-$SVN commit --username $SVNUSER --password $SVNPASS --no-auth-cache --non-interactive --message "MySQL-SVN Backup $DATEEND" $DUMPDIR >>$LOGFILE 2>&1;
-echo ">>>" >>$LOGFILE 2>&1;
+case $REPOTYPE in
+	'SVN' )
+		$SVN commit --username $SVNUSER --password $SVNPASS --no-auth-cache --non-interactive --message "MySQL-SVN Backup $DATEEND" $DUMPDIR;
+		;;
+	'GIT' )
+		cd $DUMPDIR;
+		$GIT commit -m "MySQL-SVN Backup $DATEEND";
+		$GIT push $DUMPDIR;
+		;;
+esac
+echo_o;
 
 # End output
-echo ">>> ===============================================" >>$LOGFILE 2>&1;
-echo ">>> Backup Complete at $DATEEND" >>$LOGFILE 2>&1;
-echo ">>> ===============================================" >>$LOGFILE 2>&1;
-echo "" >>$LOGFILE 2>&1;
+echo_b "Backup Complete at $DATEEND";
+echo "";
 exit 0;

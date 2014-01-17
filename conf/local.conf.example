@@ -1,63 +1,89 @@
-## MySQL Host and authentication ##
+## MySQL Host and Authentication ##
 
-# MYSQLHOST - This is the MySQL servers hostname that you
-# want to backup. This can potentially be blank to use the
-# system default MySQL host, but 'localhost' is usually
-# what most people want.
+# MYSQLHOST - This is the MySQL servers hostname that you want to backup. This
+# can potentially be blank to use the system default MySQL host, however
+# 'localhost' is usually what most people want.
 
 MYSQLHOST='localhost';
 
-# MYSQLUSER - This is the MySQL user that has access to the
-# databases and tables that you want to backup. You should
-# make this a unique user with restricted read-only rights.
+# MYSQLUSER - This is the MySQL user that has access to the databases and
+# tables that you want to backup. You should make this a unique user with
+# restricted read-only rights.
 
 MYSQLUSER='backups';
 
-# MYSQLPASS - This is the password for the MySQL user. Make
-# it a really good password.
+# MYSQLPASS - This is the password for the MySQL user. Make it a really good
+# password.
 
-MYSQLPASS='reallygoodpassword';
+MYSQLPASS='areallygoodpassword';
+
+
+## Version Control Repository Settings ##
+
+# REPOTYPE - This is the type of repository to use. Valid choices are 'SVN'
+# and 'GIT', there is no default.
+
+REPOTYPE='SVN';
 
 
 ## SVN Host and Authentication ##
 
-# SVNUSER - This is the Subversion user that will connect
-# to the remote Subversion repository and commit backups.
+# SVNURI - This is the full path to the Subversion repository. If you are not
+# using HTTPS protocol you ought to seriously consider it. Backups are
+# committed directly into this path, not into trunk, or a branch.
+
+SVNURI='https://svn.example.org/backups/';
+
+# SVNUSER - This is the Subversion user that will connect to the remote
+# Subversion repository and commit backups.
 
 SVNUSER='backups';
 
-# SVNPASS - This is the password for the Subversion user.
-# Make it really good as well.
+# SVNPASS - This is the password for the Subversion user. Make it really good
+# as well.
 
 SVNPASS='alsoagoodpassword';
 
-# SVNURI - This is the full path to the Subversion repository.
-# If you are not using HTTPS protocol you ought to seriously
-# consider it. Backups are committed directly into this path,
-# not into trunk, or a branch.
 
-SVNURI='https://svn.example.org/backups/';
+## GIT Host and Authentication ##
+
+# GITURI - This is the full path to the GIT repository. Both SSH and HTTPS
+# protocols are accepted. If you experience issues with certain protocols it
+# may be a firewall issue. If using SSH, only specify the user here. For HTTPS
+# you need to specify the user and password. For SSH you will need to have a
+# valid SSH key installed for the executing user.
+
+GITURI='ssh://backups@git.example.org:backups/my-backups.git';
+#GITURI='https://backups:reallygoodpassword@git.example.org/backups/my-backups.git';
+
+# GITBRANCH - The GIT branch where your backups will be stored. If the branch
+# does not exist the process will fail. There is no default, choose wisely.
+
+GITBRANCH='master';
 
 
 ## Storage ##
 
-# LOGFILE - The location of the log file that will collect
-# the output from the script (can be relative to script
-# location or absolute path). Default is shown.
+# LOGSTORE - The type of storage for the log. Options are: 'file' and 'screen'.
+# Default is shown.
+
+#LOGSTORE='file';
+
+# LOGFILE - The location of the log file that will collect the output from the
+# script (can be relative to script location or absolute path). Default is
+# shown.
 
 #LOGFILE='mysql-svn.log';
 
-# DUMPDIR - The location of the directory where mysqldump
-# will store backup files that it creates (can be relative
-# to script location or absolute path). Don't add a trailing
-# slash. Default is shown.
+# DUMPDIR - The location of the directory where mysqldump will store backup
+# files that it creates (can be relative to script location or absolute path).
+# Don't add a trailing slash. Default is shown.
 
 #DUMPDIR='dump';
 
-# DATATYPES - The types of data you wish to store from the
-# backup. This value is an array, so if you specify more
-# than one type, multiple data files will be created for
-# each table.
+# DATATYPES - The types of data you wish to store from the backup. This value
+# is an array, so if you specify more than one type, multiple data files will
+# be created for each table.
 
 # Backup all data (this is the default) -
 #DATATYPES='all';
@@ -72,8 +98,8 @@ SVNURI='https://svn.example.org/backups/';
 #DATATYPES='schema
 #data';
 
-# Backup all data, schema and content in separate files
-# (why would you want to do this?) -
+# Backup all data, schema and content in separate files (why would you want to
+# do this?) -
 #DATATYPES='all
 #schema
 #data';
@@ -81,20 +107,26 @@ SVNURI='https://svn.example.org/backups/';
 
 ## MySQL Executables ##
 
-# MYSQL - This is the path to the MySQL command line
-# client. Default is shown.
+# MYSQL - This is the path to the MySQL command line client. Default is shown.
 
 #MYSQL='/usr/bin/mysql';
 
-# MYSQLDUMP - This is the path to the MySQL Dump command
-# line client. Default is shown.
+# MYSQLDUMP - This is the path to the MySQL Dump command line client. Default
+# is shown.
 
 #MYSQLDUMP='/usr/bin/mysqldump';
 
 
 ## SVN Executable ##
 
-# SVN - This is the path to the Subversion command line
-# client. Default is shown.
+# SVN - This is the path to the Subversion command line client. Default is
+# shown.
 
 #SVN='/usr/bin/svn';
+
+
+## GIT Executable ##
+
+# GIT - This is the path to the GIT command line client. Default is shown.
+
+#GIT='/usr/bin/git';
