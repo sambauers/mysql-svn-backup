@@ -1,7 +1,7 @@
 MySQL SVN Backup
 ================
 
-MySQL SVN Backup provides an easy way to backup your MySQL databases to an SVN repository. Some rationale for it's existence is on [this blog post](http://redant.com.au/how-we-do/backing-up-mysql-into-subversion-using-mysql-svn-backup/ "Dolphins with lasers like to back up their databases to Subversion, how about you?").
+MySQL SVN Backup provides an easy way to backup your MySQL databases to an SVN or GIT repository. Some rationale for it's existence is on [this blog post](http://redant.com.au/how-we-do/backing-up-mysql-into-subversion-using-mysql-svn-backup/ "Dolphins with lasers like to back up their databases to Subversion, how about you?").
 
 This project is maintained by [Red Ant](http://redant.com.au/ "Visit Red Ant's website").
 
@@ -10,11 +10,11 @@ The pretty version of this information is [over here](http://mysql-svn-backup.re
 About MySQL SVN Backup
 ----------------------
 
-When run locally on a MySQL platform it makes local dumps of databases table-by-table to files. These files are then automatically checked into a preconfigured Subversion repository.
+When run locally on a MySQL platform it makes local dumps of databases table-by-table to files. These files are then automatically checked into a preconfigured Subversion or GIT repository.
 
 The primary advantage is in having complete incremental historical snapshots of your database(s) available for potentially a longer time than standard monolithic database dumps.
 
-If you find you need to transpose databases to other locations a lot, then storing your backups in Subversion can help to speed things up. Instead of waiting for an entire dump to be transferred, you can just keep a local working copy of the backup and update the incremental changes using Subversion before importing the data into MySQL.
+If you find you need to transpose databases to other locations a lot, then storing your backups in a remote version control repository can help to speed things up. Instead of waiting for an entire dump to be transferred, you can just keep a local working copy of the backup and update the incremental changes using Subversion or GIT before importing the data into MySQL.
 
 This method and tool is not recommended for huge databases (or at least it hasn't been tested). It is probably also not much good for databases that store a lot of frequently changing binary data.
 
@@ -25,8 +25,8 @@ Dependencies
 
 * Bash Shell
 * MySQL command line client and MySQLDump
-* Subversion
-* A remote Subversion repository
+* Subversion or GIT command line tools
+* A remote Subversion or GIT repository
 
 Configuration
 -------------
@@ -56,7 +56,7 @@ Then run the script without any options like this:
 
 	$ ./mysql-svn.sh
 
-The script does not report any status to the command line. This is because it is primarily designed to be invoked by a scheduler like *cron*. Check the output in the log file at `mysql-svn.log` for details of fatal errors, warnings and generally what happened during the backup run.
+The script does not report any status to the command line by default. This is because it is primarily designed to be invoked by a scheduler like *cron*. Check the output in the log file at `mysql-svn.log` for details of fatal errors, warnings and generally what happened during the backup run. If you really want the script to log output to the screen then you can adjust the LOGSTORE variable in `conf/local.conf`.
 
 Restoring from your backups
 ---------------------------
