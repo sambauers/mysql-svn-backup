@@ -11,7 +11,7 @@
 
     <!-- Schema.org Properties -->
     <!-- Thing -->
-    <meta itemprop="description" content="MySQL SVN Backup provides an easy way to backup your MySQL database to an SVN repository.">
+    <meta itemprop="description" content="MySQL SVN Backup provides an easy way to backup your MySQL database to an SVN or GIT repository.">
     <meta itemprop="image" content="http://mysql-svn-backup.redant.com.au/images/mysql-svn-backup.png">
     <meta itemprop="name" content="MySQL SVN Backup">
     <meta itemprop="url" content="http://mysql-svn-backup.redant.com.au/">
@@ -20,14 +20,14 @@
     <meta itemprop="copyrightHolder" content="Red Ant Design Pty Ltd">
     <meta itemprop="creator" content="Sam Bauers">
     <meta itemprop="isFamilyFriendly" content="true">
-    <meta itemprop="keywords" content="MySQL, Subversion, SVN, Backup, Bash">
+    <meta itemprop="keywords" content="MySQL, Subversion, SVN, GIT, Backup, Bash">
     <meta itemprop="publisher" content="Red Ant Design Pty Ltd">
     <!-- SoftwareApplication -->
     <meta itemprop="applicationCategory" content="Utility">
     <meta itemprop="applicationSubCategory" content="Backup">
     <meta itemprop="downloadUrl" content="https://github.com/red-ant/mysql-svn-backup/zipball/master">
     <meta itemprop="operatingSystem" content="Mac OS X, Linux, BSD">
-    <meta itemprop="requirements" content="Bash, MySQL, Subversion">
+    <meta itemprop="requirements" content="Bash, MySQL, Subversion or GIT">
 
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -38,7 +38,7 @@
     <div class="wrapper">
       <header>
         <h1>MySQL SVN Backup</h1>
-        <p>MySQL SVN Backup provides an easy way to backup your MySQL databases to an SVN repository. Some rationale for it's existence is on <a href="http://redant.com.au/how-we-do/backing-up-mysql-into-subversion-using-mysql-svn-backup/" title="Dolphins with lasers like to back up their databases to Subversion, how about you?">this blog post</a>.</p>
+        <p>MySQL SVN Backup provides an easy way to backup your MySQL databases to an SVN or GIT repository. Some rationale for it's existence is on <a href="http://redant.com.au/how-we-do/backing-up-mysql-into-subversion-using-mysql-svn-backup/" title="Dolphins with lasers like to back up their databases to Subversion, how about you?">this blog post</a>.</p>
         <p class="view"><a href="https://github.com/red-ant/mysql-svn-backup">View the Project on GitHub <small>red-ant/mysql-svn-backup</small></a></p>
         <ul>
           <li><a href="https://github.com/red-ant/mysql-svn-backup/zipball/master">Download <strong>ZIP File</strong></a></li>
@@ -60,11 +60,11 @@
         </ul>
         <h2>About MySQL SVN Backup</h2>
 
-<p>When run locally on a MySQL platform it makes local dumps of databases table-by-table to files. These files are then automatically checked into a preconfigured Subversion repository.</p>
+<p>When run locally on a MySQL platform it makes local dumps of databases table-by-table to files. These files are then automatically checked into a preconfigured Subversion or GIT repository.</p>
 
 <p>The primary advantage is in having complete incremental historical snapshots of your database(s) available for potentially a longer time than standard monolithic database dumps.</p>
 
-<p>If you find you need to transpose databases to other locations a lot, then storing your backups in Subversion can help to speed things up. Instead of waiting for an entire dump to be transferred, you can just keep a local working copy of the backup and update the incremental changes using Subversion before importing the data into MySQL.</p>
+<p>If you find you need to transpose databases to other locations a lot, then storing your backups in a remote version control repository can help to speed things up. Instead of waiting for an entire dump to be transferred, you can just keep a local working copy of the backup and update the incremental changes using Subversion or GIT before importing the data into MySQL.</p>
 
 <p>This method and tool is not recommended for huge databases (or at least it hasn't been tested). It is probably also not much good for databases that store a lot of frequently changing binary data.</p>
 
@@ -75,8 +75,8 @@
 <ul>
 <li>Bash Shell</li>
 <li>MySQL command line client and MySQLDump</li>
-<li>Subversion</li>
-<li>A remote Subversion repository</li>
+<li>Subversion or GIT command line tools</li>
+<li>A remote Subversion or GIT repository</li>
 </ul>
 
 <h2>Configuration</h2>
@@ -113,7 +113,7 @@
 <pre><span class="nv">$ </span>./mysql-svn.sh</pre>
 </div>
 
-<p>The script does not report any status to the command line. This is because it is primarily designed to be invoked by a scheduler like <em>cron</em>. Check the output in the log file at <code>mysql-svn.log</code> for details of fatal errors, warnings and generally what happened during the backup run.</p>
+<p>The script does not report any status to the command line by default. This is because it is primarily designed to be invoked by a scheduler like <em>cron</em>. Check the output in the log file at <code>mysql-svn.log</code> for details of fatal errors, warnings and generally what happened during the backup run. If you really want the script to log output to the screen then you can adjust the LOGSTORE variable in <code>conf/local.conf</code>.</p>
 
 <h2>Restoring from your backups</h2>
 
