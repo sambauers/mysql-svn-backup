@@ -74,7 +74,7 @@ case $REPOTYPE in
 			echo_i "Missing SVNURI in variables.";
 			exit 112;
 		fi
-	;;
+		;;
 	'GIT' )
 		# Check for existence of critical GIT variables
 		if [ -z $GITURI ];
@@ -87,7 +87,11 @@ case $REPOTYPE in
 			echo_i "Missing GITBRANCH in variables.";
 			exit 121;
 		fi
-	;;
+		;;
+	* )
+		echo_i "Invalid REPOTYPE provided. Must be 'SVN' or 'GIT'";
+		exit 101;
+		;;
 esac
 
 # Array of databases to backup
@@ -180,11 +184,11 @@ case $REPOTYPE in
 	'SVN' )
 		$SVN info $DUMPDIR;
 		LASTRESULT=$?;
-	;;
+		;;
 	'GIT' )
 		$GIT status $DUMPDIR;
 		LASTRESULT=$?;
-	;;
+		;;
 esac
 echo_o;
 
@@ -198,11 +202,11 @@ then
 		'SVN' )
 			$SVN checkout --username $SVNUSER --password $SVNPASS --no-auth-cache --non-interactive $SVNURI $DUMPDIR;
 			LASTRESULT=$?;
-		;;
+			;;
 		'GIT' )
 			$GIT clone --branch $GITBRANCH $GITURI $DUMPDIR;
 			LASTRESULT=$?;
-		;;
+			;;
 	esac
 	echo_w;
 
@@ -229,11 +233,11 @@ else
 		'SVN' )
 			$SVN update --username $SVNUSER --password $SVNPASS --no-auth-cache --non-interactive --accept theirs-full $DUMPDIR;
 			LASTRESULT=$?;
-		;;
+			;;
 		'GIT' )
 			$GIT pull $DUMPDIR;
 			LASTRESULT=$?;
-		;;
+			;;
 	esac
 	echo_o;
 
@@ -246,10 +250,10 @@ else
 		case $REPOTYPE in
 			'SVN' )
 				echo_w "             $SVN update --username $SVNUSER --password ********** --no-auth-cache --non-interactive --accept theirs-full $DUMPDIR";
-			;;
+				;;
 			'GIT' )
 				echo_w "             $GIT pull $DUMPDIR";
-			;;
+				;;
 		esac
 		echo_w;
 		exit 502;
@@ -321,23 +325,23 @@ do
 		for DATATYPE in $DATATYPES;
 		do
 			case $DATATYPE in
-				'all')
+				'all' )
 					# Don't skip anything
 					OPTS='';
 					SUFFIX='';
 					;;
 
-				'schema')
+				'schema' )
 					# Skip table content output
 					OPTS='--no-data';
 					SUFFIX='-schema';
 					;;
-				'data')
+				'data' )
 					# Skip table creation output
 					OPTS='--no-create-info';
 					SUFFIX='-data';
 					;;
-				*)
+				* )
 					# Skip dump for unknown types
 					echo_w "        DATATYPE: $DATATYPE (skipped unknown)";
 					continue;
