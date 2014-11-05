@@ -95,10 +95,10 @@ case $REPOTYPE in
 esac
 
 # Array of databases to backup
-DATABASES=`cat $BASE/conf/databases.conf`;
+DATABASES=$( cat $BASE/conf/databases.conf );
 
 # Array of tables to skip, leave blank to backup all
-SKIPTABLES=`cat $BASE/conf/skiptables.conf`;
+SKIPTABLES=$( cat $BASE/conf/skiptables.conf );
 
 # Defaults - Storage
 if [ -z $LOGSTORE ];
@@ -145,7 +145,7 @@ then
 fi
 
 # Start output
-DATESTART=`date`;
+DATESTART=$( date );
 echo_b "Commence Backup at $DATESTART";
 echo_o;
 echo_o "1. Normalise storage";
@@ -270,7 +270,7 @@ echo_o "3. Get valid databases";
 echo_o;
 
 # Get all databases
-ALLDATABASES=`$MYSQL $MYSQLHOST $MYSQLUSER $MYSQLPASS --batch --skip-column-names --execute="SHOW DATABASES;"`;
+ALLDATABASES=$( $MYSQL $MYSQLHOST $MYSQLUSER $MYSQLPASS --batch --skip-column-names --execute="SHOW DATABASES;" );
 LASTRESULT=$?;
 
 # Fatal error if can't connect
@@ -307,7 +307,7 @@ do
 		chmod 777 $DUMPDIR/$DATABASE;
 	fi
 
-	TABLES=`$MYSQL $MYSQLHOST $MYSQLUSER $MYSQLPASS --batch --skip-column-names --execute="SHOW TABLES;" $DATABASE`;
+	TABLES=$( $MYSQL $MYSQLHOST $MYSQLUSER $MYSQLPASS --batch --skip-column-names --execute="SHOW TABLES;" $DATABASE );
 
 	for TABLE in $TABLES;
 	do
@@ -369,7 +369,7 @@ esac
 echo_o;
 echo_o "6. Commit files to working copy";
 echo_o;
-DATEEND=`date`;
+DATEEND=$( date );
 case $REPOTYPE in
 	'SVN' )
 		$SVN commit --username $SVNUSER --password $SVNPASS --no-auth-cache --non-interactive --message "MySQL-SVN Backup $DATEEND" $DUMPDIR;
