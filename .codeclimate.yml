@@ -2,3 +2,6 @@
 engines:
   fixme:
     enabled: true
+ratings:
+  paths:
+    - 'mysql-svn.sh'
