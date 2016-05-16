@@ -1,7 +1,7 @@
 MySQL SVN Backup
 ================
 
-[![Code Climate](https://codeclimate.com/repos/56e7c55bde14581088008acc/badges/72cfe8aa39d5567a5069/gpa.svg)](https://codeclimate.com/repos/56e7c55bde14581088008acc/feed) [![Issue Count](https://codeclimate.com/repos/56e7c55bde14581088008acc/badges/72cfe8aa39d5567a5069/issue_count.svg)](https://codeclimate.com/repos/56e7c55bde14581088008acc/feed)
+[![Code Climate](https://codeclimate.com/github/sambauers/mysql-svn-backup/badges/gpa.svg)](https://codeclimate.com/github/sambauers/mysql-svn-backup) [![Issue Count](https://codeclimate.com/github/sambauers/mysql-svn-backup/badges/issue_count.svg)](https://codeclimate.com/github/sambauers/mysql-svn-backup)
 
 MySQL SVN Backup provides an easy way to backup your MySQL databases to an SVN or GIT repository.
 
