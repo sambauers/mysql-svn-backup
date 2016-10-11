@@ -28,6 +28,7 @@ BASE=$( pwd -P );
 # Include externally set variables
 if [ -f "$BASE/conf/local.conf" ];
 then
+	# shellcheck source=/dev/null
 	. "$BASE/conf/local.conf"
 fi
 
@@ -375,7 +376,7 @@ case $REPOTYPE in
 		$SVN commit --username "$SVNUSER" --password "$SVNPASS" --no-auth-cache --non-interactive --message "MySQL-SVN Backup $DATEEND" "$DUMPDIR";
 		;;
 	"GIT" )
-		cd "$DUMPDIR";
+		cd "$DUMPDIR" || echo_w "FATAL ERROR: No directory at $DUMPDIR. Could not commit changes." && exit 504;
 		$GIT commit -m "MySQL-SVN Backup $DATEEND";
 		$GIT push "$DUMPDIR";
 		;;
