@@ -2,6 +2,8 @@
 engines:
   fixme:
     enabled: true
+  shellcheck:
+    enabled: true
 ratings:
   paths:
     - 'mysql-svn.sh'
