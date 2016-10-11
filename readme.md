@@ -5,9 +5,9 @@ MySQL SVN Backup
 
 MySQL SVN Backup provides an easy way to backup your MySQL databases to an SVN or GIT repository.
 
-This project is maintained by [Red Ant](http://redant.com.au/ "Visit Red Ant's website").
+This project is maintained by [Sam Bauers](https://github.com/sambauers).
 
-The pretty version of this information is [over here](http://mysql-svn-backup.redant.com.au/ "MySQL SVN Backup on GitHub Pages").
+The pretty version of this information is [over here](https://sambauers.github.io/mysql-svn-backup "MySQL SVN Backup on GitHub Pages").
 
 About MySQL SVN Backup
 ----------------------
