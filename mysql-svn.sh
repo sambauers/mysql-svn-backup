@@ -2,7 +2,7 @@
 
 # MySQL SVN Backup
 #
-# Copyright (c) 2012-2013 Red Ant
+# Copyright (c) 2012 Sam Bauers
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
