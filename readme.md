@@ -37,7 +37,9 @@ Configuration
 
 Move all the `conf/*.conf.example` files to `conf/*.conf`, here's a one-liner for that:
 
-	$ for FILE in conf/*.example; do mv $FILE ${FILE%.example}; done
+```sh
+$ for FILE in conf/*.example; do mv $FILE ${FILE%.example}; done
+```
 
 You should end up with:
 
@@ -54,11 +56,15 @@ Once configured you can run `mysql-svn.sh`
 
 You will probably need to make the script executable:
 
-	$ chmod 755 mysql-svn.sh
+```sh
+$ chmod 755 mysql-svn.sh
+```
 
 Then run the script without any options like this:
 
-	$ ./mysql-svn.sh
+```sh
+$ ./mysql-svn.sh
+```
 
 The script does not report any status to the command line by default. This is because it is primarily designed to be invoked by a scheduler like *cron*. Check the output in the log file at `mysql-svn.log` for details of fatal errors, warnings and generally what happened during the backup run. If you really want the script to log output to the screen then you can adjust the LOGSTORE variable in `conf/local.conf`.
 
@@ -67,8 +73,10 @@ Restoring from your backups
 
 To restore from the file-per-table files, you can do the following from the designated dump directory:
 
-	$ mysql -u root -p -e "CREATE DATABASE \`my_database\`;"
-	$ cat my_database/*.sql | mysql -u root -p my_database
+```sh
+$ mysql -u root -p -e "CREATE DATABASE \`my_database\`;"
+$ cat my_database/*.sql | mysql -u root -p my_database
+```
 
 This will create the database and then concatenate the sql files and pass them through the mysql client to be executed.
 
