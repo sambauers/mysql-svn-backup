@@ -18,7 +18,7 @@ The primary advantage is in having complete incremental historical snapshots of 
 
 If you find you need to transpose databases to other locations a lot, then storing your backups in a remote version control repository can help to speed things up. Instead of waiting for an entire dump to be transferred, you can just keep a local working copy of the backup and update the incremental changes using Subversion or GIT before importing the data into MySQL.
 
-Some further rationale for it's existence is on [this blog post](http://redant.com.au/how-we-do/backing-up-mysql-into-subversion-using-mysql-svn-backup/ "Dolphins with lasers like to back up their databases to Subversion, how about you?").
+Some further rationale for it's existence is in [this document](https://github.com/sambauers/mysql-svn-backup/blob/master/RATIONALE.md).
 
 This method and tool is not recommended for huge databases (or at least it hasn't been tested). It is probably also not much good for databases that store a lot of frequently changing binary data.
 
